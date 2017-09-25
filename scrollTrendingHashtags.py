@@ -17,11 +17,11 @@ except:
     devEnvironment = True
 
 #Tweak settings
-consumer_key = 'ZlcZeH0QOn7xyUcBPZ6HFDSBp'
-consumer_secret = 'dNxjbHYHRM0IZeNIT5BYPnbymb8HeVpZ5tfyCpwBRvc7fOGxma'
-access_token = '906925426144108544-gApR442qCAMcapEAZQXxYFCXKMzXQof'
-access_token_secret = 'xyL6Z7afLY3eOJZifpyIK2vbD44W9afm0VdkqplRuughP'
-debugging = False
+consumer_key = ''
+consumer_secret = ''
+access_token = ''
+access_token_secret = ''
+debugging = True
 apitimer= 60*5 # in seconds
 displayrotation = 180
 displaybrightness=0.2
