@@ -14,7 +14,10 @@ try:
 except ImportError:
     exit("This script requires the requests module\nInstall with: sudo pip install requests")
 
-import scrollphat
+try:
+    import scrollphat
+except ImportError:
+    exit("This script requires scrollphat")
 
 
 def get_location():

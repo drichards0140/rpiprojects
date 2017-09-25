@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+#https://github.com/tweepy/examples/blob/master/streamwatcher.py
+#https://stackoverflow.com/questions/42559155/find-trending-tweets-with-tweepy-for-a-specific-keyword
+#https://stackoverflow.com/questions/21203260/python-get-twitter-trends-in-tweepy-and-parse-json
+
 import time
 import unicodedata
 try:
@@ -13,12 +17,12 @@ except:
     devEnvironment = True
 
 #Tweak settings
-debugging = True
+consumer_key = 'ZlcZeH0QOn7xyUcBPZ6HFDSBp'
+consumer_secret = 'dNxjbHYHRM0IZeNIT5BYPnbymb8HeVpZ5tfyCpwBRvc7fOGxma'
+access_token = '906925426144108544-gApR442qCAMcapEAZQXxYFCXKMzXQof'
+access_token_secret = 'xyL6Z7afLY3eOJZifpyIK2vbD44W9afm0VdkqplRuughP'
+debugging = False
 apitimer= 60*5 # in seconds
-consumer_key = ''
-consumer_secret = ''
-access_token = ''
-access_token_secret = ''
 displayrotation = 180
 displaybrightness=0.2
 displayRewind = True # rapidly displayRewind after the last line
@@ -40,13 +44,14 @@ def mainLoop():
             break
 
 def getTrendingHashtags():
-    print('\ngetting api hashtags...')
+    if debugging:
+        print('\ngetting api hashtags...')
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret) #authorize
     auth.set_access_token(access_token, access_token_secret)#set the access token
     api = tweepy.API(auth) #connect with OAuth
     apitrends = api.trends_place(23424977) #api call to get the top 50 trending items
     trends = apitrends[0]['trends']
-    apiresponse=[]
+    apiresponse = []
     for trend in trends:
         if str(trend['tweet_volume']) == "None":
             apiresponse.append(trend['name']+':0')
