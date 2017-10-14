@@ -1,9 +1,18 @@
 #!/usr/bin/env python
 
+#Some quick instructions
+# Create tokens.py file in the same folder and add to .gitignore 
+# add all four tokens as listed belohw
+# make sure python, pip, and tweepy are installed
+# run in console with python scrollTredingHashtags.py to test in console
+# copy the files to the raspberry pi using ssh client ftp
+# edit to run at startup
+
+#Reference Links
 # https://github.com/tweepy/examples/blob/master/streamwatcher.py
 # https://stackoverflow.com/questions/42559155/find-trending-tweets-with-tweepy-for-a-specific-keyword
 # https://stackoverflow.com/questions/21203260/python-get-twitter-trends-in-tweepy-and-parse-json
-
+import tokens
 import time
 import unicodedata
 try:
@@ -17,21 +26,21 @@ except:
     devEnvironment = True
 
 #Tweak settings
-consumer_key = ''
-consumer_secret = ''
-access_token = ''
-access_token_secret = ''
+consumer_key = tokens.consumer_key
+consumer_secret = tokens.consumer_secret
+access_token = tokens.access_token
+access_token_secret = tokens.access_token_secret
 debugging = True
 apitimer= 60*5 # in seconds
 displayrotation = 180
 displaybrightness=0.2
 displayRewind = True # rapidly displayRewind after the last line
 displayScrollSpeed = 0.009 # Delay is the time (in seconds) between each pixel scrolled .02=slowest recommended .004=fastest recommended
-displayListLimit = 5 # limit the output of the buffer
+displayListLimit = 5 # limit the items for the output of the buffer
 
 
-def mainLoop():
-    output = getTrendingHashtags()
+def mainLoop(): 
+    output = getTrendingHashtags() # get the data from twitter api using tweepy
     timeout = time.time() + apitimer #https://stackoverflow.com/questions/13293269/how-would-i-stop-a-while-loop-after-n-amount-of-time
     while True:  
         if devEnvironment:
@@ -49,7 +58,7 @@ def getTrendingHashtags():
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret) #authorize
     auth.set_access_token(access_token, access_token_secret)#set the access token
     api = tweepy.API(auth) #connect with OAuth
-    apitrends = api.trends_place(23424977) #api call to get the top 50 trending items
+    apitrends = api.trends_place(23424977) #api call to get the top 50 trending items from woeid u.s.
     trends = apitrends[0]['trends']
     apiresponse = []
     for trend in trends:
