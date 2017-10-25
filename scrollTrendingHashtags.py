@@ -36,7 +36,7 @@ displayrotation = 180
 displaybrightness=0.2
 displayRewind = True # rapidly displayRewind after the last line
 displayScrollSpeed = 0.009 # Delay is the time (in seconds) between each pixel scrolled .02=slowest recommended .004=fastest recommended
-displayListLimit = 5 # limit the items for the output of the buffer
+displayListLimit = 8 # limit the items for the output of the buffer
 
 
 def mainLoop(): 
@@ -79,73 +79,40 @@ def human_format(num):
     # add more suffixes if you need them
     return '%.0f%s' % (num, ['', 'K', 'M', 'G', 'T', 'P'][magnitude])
 
-def scrollConsole_old(output):
-    #breaks up the output object into displayListLimit sized pieces before sending to the scrolldisplay function, so the buffer will not be over done
-    listlength = len(output)
-    lastrowstart = (int(listlength / displayListLimit) ) * displayListLimit
-    lastrowlength = listlength % displayListLimit
-    if devEnvironment:
-        print("\nlistlength="+str(listlength)+"\nlastrowlength="+str(lastrowlength)+"\nlastrowstart="+str(lastrowstart))
-    
-    for x in range(0,listlength,displayListLimit):
-        scrollBufferList=[] # clear and set the object
-        if x == lastrowstart and lastrowlength!=0:
-            endofrow = lastrowlength
-        else:
-            endofrow = displayListLimit
-
-        for item in range(x,x+endofrow):
-            scrollBufferList.append(output[item])
-
-        print("\nScrolling items "+str(x)+" through "+str(x+endofrow))
-        print(scrollBufferList) #show the list ofitems to be scrolled
-        time.sleep(2) #wait for the items to be scrolled       
-    #end for x in range
 
 def scrollConsole(output):
+    #take the information in the output array and emulate scrolling to the scrollphathd by sending to the console instead to test the logic
     listlength = len(output)
     lastrowstart = (int(listlength / displayListLimit) ) * displayListLimit
     lastrowlength = listlength % displayListLimit
+    scrollBufferList=[] # clear and set the object
     if debugging:
         print("\nlistlength="+str(listlength)+"\nlastrowlength="+str(listlength % displayListLimit)+"\nlastrowstart="+str(lastrowstart))
-    scrollBufferList=[] # clear and set the object
 
-    for item, val in enumerate(output):
-        if (item % displayListLimit) == 0 and item != 0: #if its the size of the limit and not the first item
-            scrollBufferList.append(output[item])
+    for item, val in enumerate(output,1):
+        scrollBufferList.append(output[item-1]) # add the output item to the buffer stack
+        if item % displayListLimit ==0 or item==len(output): #if its the size of the limit or the last item in the list
             print(scrollBufferList)
-            time.sleep(2) #wait for the items to be scrolled 
-            scrollBufferList=[] # clear
-        elif item == (len(output)-1): #last item in list
-            scrollBufferList.append(output[item])
-            print(scrollBufferList)
-            time.sleep(2) #wait for the items to be scrolled 
-            scrollBufferList=[] # clear
-        else:
-            scrollBufferList.append(output[item])
+            time.sleep(displayListLimit/2) #wait for the items to be scrolled (proportionate to the size of the list)
+            scrollBufferList=[] # clear out the buffer
+        
             
 def scrollDisplay(output):
+    #take the information in the output array and push it to the scrollphathd
     listlength = len(output)
     lastrowstart = (int(listlength / displayListLimit) ) * displayListLimit
     lastrowlength = listlength % displayListLimit
     scrollBufferList=[] # clear and set the object
 
-    for item, val in enumerate(output):
-        if ((item-1) % displayListLimit) == 0 and item != 0: #if its the size of the limit and not the first item
-            scrollBufferList.append(output[item])
+    for item, val in enumerate(output,1):
+        scrollBufferList.append(output[item-1]) # add the output item to the buffer stack
+        if item % displayListLimit ==0 or item==len(output): #if its the size of the limit or the last item
+            scrollBufferList.append(output[item-1])
             if debugging:
                 print(scrollBufferList)
             scrollList(scrollBufferList)
             scrollBufferList=[] # clear
-        elif item == (len(output)-1): #last item in list
-            scrollBufferList.append(output[item])
-            if debugging:
-                print(scrollBufferList)
-            scrollList(scrollBufferList)
-            scrollBufferList=[] # clear
-        else:
-            scrollBufferList.append(output[item])
-
+        
 
 def scrollList(output):
     #accepts a list of strings and displays to the scrollphat
